@@ -1,0 +1,35 @@
+
+{% extends 'layouts/base.html' %}
+{% set isHomepage = True %}
+
+{% block mastHead %}
+{{ super() }}
+<div class="app-masthead">
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters">
+        <h1 class="govuk-heading-xl app-masthead__title govuk-!-margin-bottom-2">
+          Site name
+        </h1>
+        <p class="govuk-body-l govuk-!-margin-bottom-0 app-masthead__sub-title">
+          Something here
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block content %}
+<div class='govuk-grid-row'>
+  <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+   <h2 class="govuk-heading-l">Something here</h2>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block content_footer %}
+<p>This is a footer test</p>
+{% endblock %}
