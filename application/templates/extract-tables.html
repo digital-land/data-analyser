@@ -5,7 +5,7 @@
 <div class='govuk-grid-row'>
   <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
     <h2 class="govuk-heading-m">Extract tables from a PDF file or a URL</h2>
-    <form method="POST" action="{{ url_for('main.extract_tables') }}">
+    <form method="POST" action="{{ url_for('main.extract_tables') }}" enctype="multipart/form-data">
       <fieldset class="govuk-fieldset">
         {{ form.csrf_token }}
         <div class="govuk-form-group">
@@ -31,8 +31,8 @@
           {{ form.url(class="govuk-input") }}
         </div>
         <div class="govuk-form-group file-input" style="display: none;">
-          {{ form.file_name.label(class="govuk-file-upload") }}
-          {{ form.file_name(class="govuk-file-upload") }}
+          {{ form.file.label(class="govuk-file-upload") }}
+          {{ form.file(class="govuk-file-upload") }}
         </div>
         <button class="govuk-button" type="submit">Save and continue</button>
       </fieldset>

@@ -13,6 +13,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = False
     DEBUG = False
+    ALLOWED_EXTENSIONS = {"pdf"}
 
 
 class DevelopmentConfig(Config):
