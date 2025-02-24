@@ -1,0 +1,67 @@
+{% extends 'layouts/base.html' %}
+{% set isHomepage = True %}
+
+{% block content %}
+<div class='govuk-grid-row'>
+  <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+    <h2 class="govuk-heading-m">Extract tables from a PDF file or a URL</h2>
+    <form method="POST" action="{{ url_for('main.extract_tables') }}">
+      <fieldset class="govuk-fieldset">
+        {{ form.csrf_token }}
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="url" name="file_or_url" type="radio" value="url">
+            <label class="govuk-label govuk-radios__label" for="url">
+              URL
+            </label>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="file" name="file_or_url" type="radio" value="file">
+            <label class="govuk-label govuk-radios__label" for="file">
+              File
+            </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="govuk-form-group url-input" style="display: none;">
+          {{ form.url.label(class="govuk-label") }}
+          {{ form.url(class="govuk-input") }}
+        </div>
+        <div class="govuk-form-group file-input" style="display: none;">
+          {{ form.file_name.label(class="govuk-file-upload") }}
+          {{ form.file_name(class="govuk-file-upload") }}
+        </div>
+        <button class="govuk-button" type="submit">Save and continue</button>
+      </fieldset>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const urlInput = document.querySelector('.url-input');
+    const fileInput = document.querySelector('.file-input');
+    const radioButtons = document.querySelectorAll('input[name="file_or_url"]');
+
+    function toggleInputs(value) {
+      urlInput.style.display = value === 'url' ? 'block' : 'none';
+      fileInput.style.display = value === 'file' ? 'block' : 'none';
+    }
+
+    // Set initial state based on selected radio button
+    const selectedRadio = document.querySelector('input[name="file_or_url"]:checked');
+    if (selectedRadio) {
+      toggleInputs(selectedRadio.value);
+    }
+
+    // Add change event listener to radio buttons
+    radioButtons.forEach(radio => {
+      radio.addEventListener('change', (e) => toggleInputs(e.target.value));
+    });
+  });
+</script>
+{% endblock %}

@@ -7,3 +7,4 @@ psycopg2-binary
 Flask-SQLAlchemy
 Flask-Migrate
 flask-talisman
+planning-data-analysis @ git+https://github.com/digital-land/planning-data-analysis.git#egg=planning_data_analysis

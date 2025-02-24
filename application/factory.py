@@ -35,7 +35,7 @@ def register_context_processors(app):
     def global_variables_context_processor():
         return {
             "site_settings": {
-                "name": "Site name",
+                "name": "Planning Data Analysis",
                 "team_name": "Digital Land",
             },
         }
