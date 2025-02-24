@@ -22,7 +22,7 @@ def extract_tables():
     if form.validate_on_submit():
         try:
             if form.file_or_url.data == "url":
-                extracted_tables = extract_table(form.url.data)
+                extracted_tables = extract_table(form.url.data, from_web=True)
             elif form.file_or_url.data == "file":
                 if allowed_file(
                     form.file.data.filename, current_app.config["ALLOWED_EXTENSIONS"]
@@ -31,7 +31,7 @@ def extract_tables():
                     temp_dir = tempfile.mkdtemp()
                     file_path = os.path.join(temp_dir, filename)
                     form.file.data.save(file_path)
-                    extracted_tables = extract_table(file_path)
+                    extracted_tables = extract_table(file_path, from_file=True)
             return redirect(url_for("main.display_tables", tables=extracted_tables))
 
         except Exception as e:

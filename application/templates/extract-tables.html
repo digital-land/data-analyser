@@ -4,7 +4,7 @@
 {% block content %}
 <div class='govuk-grid-row'>
   <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
-    <h2 class="govuk-heading-m">Extract tables from a PDF file or a URL</h2>
+    <h2 class="govuk-heading-m">Extract tables from a PDF file or a webpage</h2>
     <form method="POST" action="{{ url_for('main.extract_tables') }}" enctype="multipart/form-data">
       <fieldset class="govuk-fieldset">
         {{ form.csrf_token }}
