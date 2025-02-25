@@ -1,4 +1,9 @@
+from dotenv import load_dotenv
 from flask import Flask
+
+from application.models import *  # noqa
+
+load_dotenv()
 
 
 def create_app(config_filename):
@@ -67,9 +72,8 @@ def register_commands(app):
 
 
 def register_extensions(app):
-    # from application.extensions import db, migrate, talisman
+    from application.extensions import db, migrate
 
-    # db.init_app(app)
-    # migrate.init_app(app, db)
+    db.init_app(app)
+    migrate.init_app(app, db)
     # talisman.init_app(app)
-    pass
