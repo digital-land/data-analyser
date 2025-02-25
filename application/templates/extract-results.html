@@ -1,0 +1,33 @@
+
+{% extends 'layouts/base.html' %}
+{% set isHomepage = False %}
+
+
+{% block content %}
+    <div class='govuk-grid-row'>
+      <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+        {% for table in tables %}
+          <h2 id="{{ table.index }}" class="govuk-heading-m">Table {{ table.index }}</h2>
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                {% for header in table.headers %}
+                  <th class="govuk-table__header">{{ header }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for row in table.rows %}
+                <tr class="govuk-table__row">
+                  {% for header in table.headers %}
+                    <td class="govuk-table__cell">{{ row[header] }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--invisible">
+        {% endfor %}
+      </div>
+    </div>
+{% endblock %}

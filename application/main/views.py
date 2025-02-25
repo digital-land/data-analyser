@@ -1,5 +1,7 @@
+import csv
 import os
 import tempfile
+from io import StringIO
 
 from flask import Blueprint, current_app, flash, redirect, render_template, url_for
 from planning_data_analysis.extract import extract_table
@@ -42,9 +44,9 @@ def extract_tables():
                         else form.file.data.filename
                     )
                 )
-                for table in extracted_tables:
-                    data = table.to_csv(index=False)
-                    extract.items.append(ExtractItem(data=data))
+                for index, table in enumerate(extracted_tables):
+                    data = table.to_csv(index=False, quoting=csv.QUOTE_MINIMAL)
+                    extract.items.append(ExtractItem(data=data, index=index + 1))
                 db.session.add(extract)
                 db.session.commit()
                 return redirect(
@@ -61,10 +63,16 @@ def extract_tables():
     return render_template("extract-tables.html", form=form)
 
 
-@main.route("/extract-results/<extract_id>")
+@main.route("/extract-results/<uuid:extract_id>")
 def display_extract_results(extract_id):
-    extract = Extract.query.get(extract_id)
-    return render_template("extract-results.html", extract=extract)
+    extract = Extract.query.get_or_404(extract_id)
+    tables = []
+    for item in extract.items:
+        reader = csv.DictReader(StringIO(item.data))
+        headers = reader.fieldnames
+        rows = [row for row in reader]
+        tables.append({"index": item.index, "headers": headers, "rows": rows})
+    return render_template("extract-results.html", extract=extract, tables=tables)
 
 
 @main.route("/cookies")

@@ -2,7 +2,7 @@ import datetime
 import uuid
 from typing import List
 
-from sqlalchemy import UUID, DateTime, Text
+from sqlalchemy import UUID, DateTime, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from application.extensions import db
@@ -23,8 +23,11 @@ class ExtractItem(db.Model):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    index: Mapped[int] = mapped_column(Integer, nullable=False)
     data: Mapped[str] = mapped_column(Text, nullable=False)
     extract_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), db.ForeignKey("extract.id"), nullable=False
     )
-    extract: Mapped["Extract"] = relationship(back_populates="items")
+    extract: Mapped["Extract"] = relationship(
+        back_populates="items", order_by="ExtractItem.index"
+    )
