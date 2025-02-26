@@ -17,7 +17,9 @@ class Extract(db.Model):
         DateTime, default=datetime.datetime.today, nullable=False
     )
     items: Mapped[List["ExtractItem"]] = relationship(
-        back_populates="extract", order_by="ExtractItem.index"
+        back_populates="extract",
+        order_by="ExtractItem.index",
+        cascade="all, delete-orphan",
     )
 
 
