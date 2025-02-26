@@ -2,28 +2,10 @@
 {% extends 'layouts/base.html' %}
 {% set isHomepage = True %}
 
-{% block mastHead %}
-{{ super() }}
-<div class="app-masthead">
-  <div class="govuk-width-container">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-three-quarters">
-        <h1 class="govuk-heading-xl app-masthead__title govuk-!-margin-bottom-2">
-          Data Analysis
-        </h1>
-        <p class="govuk-body-l govuk-!-margin-bottom-0 app-masthead__sub-title">
-          Tools for analysing planning data.
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
-{% endblock %}
-
 {% block content %}
 <div class='govuk-grid-row'>
   <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+    <h1 class="govuk-heading-xl">Planning Data Analysis tools</h1>
     <p class="govuk-body">This application is a work in progress. It is a collection of tools for analysing planning data.</p>
     <p class="govuk-body">It is built using <a href="https://github.com/digital-land/planning-data-analysis">Digital Land planning data analysis tools</a></p>
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">

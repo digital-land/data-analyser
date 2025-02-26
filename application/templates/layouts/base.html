@@ -64,7 +64,7 @@
 
 {% block beforeContent %}
   {% block app_phase_banner %}
-    {% if showPhaseBanner %}
+
       <div class="govuk-phase-banner">
         <p class="govuk-phase-banner__content">
           <strong class="govuk-tag govuk-phase-banner__content__tag">
@@ -75,7 +75,6 @@
         </span>
         </p>
       </div>
-    {% endif %}
   {% endblock %}
   {% block app_breadcrumbs %}
     {% if not isHomepage %}
