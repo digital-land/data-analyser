@@ -63,9 +63,7 @@ def extract_tables():
                     extract.items.append(ExtractItem(data=data, index=index + 1))
                 db.session.add(extract)
                 db.session.commit()
-                return redirect(
-                    url_for("main.display_extract_results", extract_id=extract.id)
-                )
+                return redirect(url_for("main.extract_results", extract_id=extract.id))
             else:
                 flash("No tables found in the uploaded file", "error")
                 return redirect(url_for("main.extract_tables"))
@@ -78,7 +76,7 @@ def extract_tables():
 
 
 @main.route("/extract-result/<uuid:extract_id>")
-def display_extract_results(extract_id):
+def extract_results(extract_id):
     extract = Extract.query.get_or_404(extract_id)
     tables = []
     for item in extract.items:
@@ -102,6 +100,12 @@ def download_table(extract_id, table_id):
             binary_data, download_name=f"table_{item.index}.csv", as_attachment=True
         )
     return "Table not found", 404
+
+
+@main.route("/extract-index")
+def extract_index():
+    extracts = Extract.query.order_by(Extract.created_at.desc()).all()
+    return render_template("extract-index.html", extracts=extracts)
 
 
 @main.route("/cookies")

@@ -1,5 +1,2 @@
-def do_something(value):
-    if isinstance(value, str):
-        return f"Did something with {value}!"
-    else:
-        return value
+def short_datetime(value):
+    return value.strftime("%d %b %Y %H:%M")

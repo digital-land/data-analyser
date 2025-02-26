@@ -25,9 +25,9 @@ def register_blueprints(app):
 
 
 def register_filters(app):
-    from application.filters import do_something
+    from application.filters import short_datetime
 
-    app.add_template_filter(do_something, "do_something")
+    app.add_template_filter(short_datetime, "short_datetime")
 
 
 def register_context_processors(app):

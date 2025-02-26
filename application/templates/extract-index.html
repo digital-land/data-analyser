@@ -1,0 +1,75 @@
+{% extends 'layouts/base.html' %}
+{% set isHomepage = False %}
+
+{% block app_breadcrumbs %}
+    {{
+        govukBreadcrumbs({
+        'items': [
+            {
+                'text': "Home",
+                'href': url_for('main.index')
+            },
+            {
+                'text': "Extract results",
+             },
+            ]
+        })
+    }}
+{% endblock app_breadcrumbs %}
+
+{% block content %}
+<div class='govuk-grid-row'>
+    <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+        <h1 class="govuk-heading-l">Extract results</h1>
+        <p class="govuk-body">
+            Here are the results of the last five days of extracts. Older extracts are deleted.
+        </p>
+        {% for extract in extracts %}
+
+        <div id="extract" class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                    Extract
+                </h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Source {% if 'http' in extract.source %}URL{% else %}File{% endif %}
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            {% if 'http' in extract.source %}
+                            <a href="{{ extract.source }}">{{ extract.source }}</a>
+                            {% else %}
+                            {{ extract.source }}
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Results
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="{{ url_for('main.extract_results', extract_id=extract.id) }}">
+                                {{ extract.items | length }} table{{ "s" if extract.items | length > 1 else "" }}
+                                extracted
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Created at
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ extract.created_at | short_datetime }}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
