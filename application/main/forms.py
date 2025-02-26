@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import FileField, RadioField, URLField, ValidationError
+from wtforms import (
+    FileField,
+    IntegerField,
+    RadioField,
+    StringField,
+    URLField,
+    ValidationError,
+)
 from wtforms.validators import DataRequired, Optional
 
 
@@ -11,6 +18,8 @@ class ExtractTablesForm(FlaskForm):
         choices=[("file", "File"), ("url", "URL")],
         validators=[DataRequired()],
     )
+    index = IntegerField("Index", validators=[Optional()])
+    keywords = StringField("Keywords", validators=[Optional()])
 
     def validate(self, extra_validators=None):
         if not super().validate(extra_validators=extra_validators):

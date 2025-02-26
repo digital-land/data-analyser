@@ -34,6 +34,16 @@
           {{ form.file.label(class="govuk-file-upload") }}
           {{ form.file(class="govuk-file-upload") }}
         </div>
+        <div class="govuk-form-group">
+          {{ form.index.label(class="govuk-label") }}
+          <p class="govuk-hint">An optional index of the table to extract (zero based)</p>
+          {{ form.index(class="govuk-input govuk-input--width-5") }}
+        </div>
+        <div class="govuk-form-group">
+          {{ form.keywords.label(class="govuk-label") }}
+          <p class="govuk-hint">Optional keywords to search for the table to extract</p>
+          {{ form.keywords(class="govuk-input") }}
+        </div>
         <button class="govuk-button" type="submit">Save and continue</button>
       </fieldset>
     </form>

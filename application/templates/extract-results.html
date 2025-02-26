@@ -26,6 +26,7 @@
                 {% endfor %}
             </tbody>
           </table>
+          <a href="{{ url_for('main.download_table', extract_id=extract.id, table_id=table.id) }}" class="govuk-link" download="table_{{ table.index }}.csv">Download as CSV</a>
           <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--invisible">
         {% endfor %}
       </div>

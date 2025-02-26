@@ -16,7 +16,9 @@ class Extract(db.Model):
     created_at: Mapped[datetime.date] = mapped_column(
         DateTime, default=datetime.datetime.today, nullable=False
     )
-    items: Mapped[List["ExtractItem"]] = relationship(back_populates="extract")
+    items: Mapped[List["ExtractItem"]] = relationship(
+        back_populates="extract", order_by="ExtractItem.index"
+    )
 
 
 class ExtractItem(db.Model):
@@ -28,6 +30,4 @@ class ExtractItem(db.Model):
     extract_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), db.ForeignKey("extract.id"), nullable=False
     )
-    extract: Mapped["Extract"] = relationship(
-        back_populates="items", order_by="ExtractItem.index"
-    )
+    extract: Mapped["Extract"] = relationship(back_populates="items")

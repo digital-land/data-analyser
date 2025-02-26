@@ -1,9 +1,17 @@
 import csv
 import os
 import tempfile
-from io import StringIO
+from io import BytesIO, StringIO
 
-from flask import Blueprint, current_app, flash, redirect, render_template, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    send_file,
+    url_for,
+)
 from planning_data_analysis.extract import extract_table
 from werkzeug.utils import secure_filename
 
@@ -24,9 +32,13 @@ def index():
 def extract_tables():
     form = ExtractTablesForm()
     if form.validate_on_submit():
+        index = form.index.data if form.index.data else None
+        keywords = form.keywords.data if form.keywords.data else None
         try:
             if form.file_or_url.data == "url":
-                extracted_tables = extract_table(form.url.data, from_web=True)
+                extracted_tables = extract_table(
+                    form.url.data, from_web=True, table_index=index, key_words=keywords
+                )
             elif form.file_or_url.data == "file":
                 if allowed_file(
                     form.file.data.filename, current_app.config["ALLOWED_EXTENSIONS"]
@@ -35,7 +47,9 @@ def extract_tables():
                     temp_dir = tempfile.mkdtemp()
                     file_path = os.path.join(temp_dir, filename)
                     form.file.data.save(file_path)
-                    extracted_tables = extract_table(file_path, from_file=True)
+                    extracted_tables = extract_table(
+                        file_path, from_file=True, table_index=index, key_words=keywords
+                    )
             if extracted_tables:
                 extract = Extract(
                     source=(
@@ -63,7 +77,7 @@ def extract_tables():
     return render_template("extract-tables.html", form=form)
 
 
-@main.route("/extract-results/<uuid:extract_id>")
+@main.route("/extract-result/<uuid:extract_id>")
 def display_extract_results(extract_id):
     extract = Extract.query.get_or_404(extract_id)
     tables = []
@@ -71,8 +85,23 @@ def display_extract_results(extract_id):
         reader = csv.DictReader(StringIO(item.data))
         headers = reader.fieldnames
         rows = [row for row in reader]
-        tables.append({"index": item.index, "headers": headers, "rows": rows})
+        tables.append(
+            {"index": item.index, "id": item.id, "headers": headers, "rows": rows}
+        )
     return render_template("extract-results.html", extract=extract, tables=tables)
+
+
+@main.route("/extract-result/<uuid:extract_id>/table/<uuid:table_id>")
+def download_table(extract_id, table_id):
+    item = ExtractItem.query.filter(
+        ExtractItem.extract_id == extract_id, ExtractItem.id == table_id
+    ).first_or_404()
+    if item:
+        binary_data = BytesIO(item.data.encode("utf-8"))
+        return send_file(
+            binary_data, download_name=f"table_{item.index}.csv", as_attachment=True
+        )
+    return "Table not found", 404
 
 
 @main.route("/cookies")
