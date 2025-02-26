@@ -65,7 +65,11 @@ def extract_tables():
                 db.session.commit()
                 return redirect(url_for("main.extract_results", extract_id=extract.id))
             else:
-                flash("No tables found in the uploaded file", "error")
+                messages = {
+                    "file": "No tables found in the uploaded file",
+                    "url": "No tables found in the webpage provided",
+                }
+                flash(messages[form.file_or_url.data], "error")
                 return redirect(url_for("main.extract_tables"))
 
         except Exception as e:

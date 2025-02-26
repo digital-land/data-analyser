@@ -20,6 +20,21 @@
 {% block content %}
 <div class='govuk-grid-row'>
   <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-visually-hidden">Warning</span>
+            <ul class="govuk-list govuk-list">
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          </strong>
+        </div>
+      {% endif %}
+    {% endwith %}
     <h2 class="govuk-heading-m">Extract tables from a PDF file or a webpage</h2>
     <form method="POST" action="{{ url_for('main.extract_tables') }}" enctype="multipart/form-data">
       <fieldset class="govuk-fieldset">
