@@ -1,18 +1,3 @@
-===============================
-Digital land Flask app template
-===============================
+# Data analyser app
 
-
-#### Prerequisites
-
-1. python 3
-
-Create a virtualenv and activate it, and then:
-
-    make init
-
-Run the app
-
-    flask run
-
-and have a look at http://localhost:5050
+This application allows execution of some of the data analysis scripts from [https://github.com/digital-land/planning-data-analysis](https://github.com/digital-land/planning-data-analysis) from a web application.
