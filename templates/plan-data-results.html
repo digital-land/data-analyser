@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Plan Data Collection Results</h1>
+
+        <div class="govuk-body">
+            <p>Collection results for:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Source file: {{ collection.source_file }}</li>
+                <li>Reference file: {{ collection.reference_file }}</li>
+                <li>Created at: {{ collection.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+            </ul>
+        </div>
+
+        <h2 class="govuk-heading-l">Generated Data</h2>
+
+        <div class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Plan Data
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="{{ url_for('static', filename=collection.output_path) }}"
+                       class="govuk-link">
+                        Download Plan Data
+                    </a>
+                </dd>
+            </div>
+
+            {% if collection.failed_urls_path %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Failed URLs
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="{{ url_for('static', filename=collection.failed_urls_path) }}"
+                       class="govuk-link">
+                        Download Failed URLs List
+                    </a>
+                </dd>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="govuk-button-group">
+            <a href="{{ url_for('main.collect_plan_data') }}"
+               class="govuk-button"
+               data-module="govuk-button">
+                Collect New Data
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,7 +2,7 @@ import datetime
 import uuid
 from typing import List
 
-from sqlalchemy import UUID, DateTime, Integer, Text
+from sqlalchemy import JSON, UUID, DateTime, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from application.extensions import db
@@ -33,3 +33,42 @@ class ExtractItem(db.Model):
         UUID(as_uuid=True), db.ForeignKey("extract.id"), nullable=False
     )
     extract: Mapped["Extract"] = relationship(back_populates="items")
+
+
+class ClusterAnalysis(db.Model):
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    source_file: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime.date] = mapped_column(
+        DateTime, default=datetime.datetime.today, nullable=False
+    )
+    grouped_reasons: Mapped[dict] = mapped_column(JSON, nullable=False)
+    visualization_path: Mapped[str] = mapped_column(Text, nullable=False)
+    report_path: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class CILProcess(db.Model):
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    source_file: Mapped[str] = mapped_column(Text, nullable=False)
+    reference_file: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime.date] = mapped_column(
+        DateTime, default=datetime.datetime.today, nullable=False
+    )
+    cil_output_path: Mapped[str] = mapped_column(Text, nullable=False)
+    ifs_output_path: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class PlanDataCollection(db.Model):
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    source_file: Mapped[str] = mapped_column(Text, nullable=False)
+    reference_file: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime.date] = mapped_column(
+        DateTime, default=datetime.datetime.today, nullable=False
+    )
+    output_path: Mapped[str] = mapped_column(Text, nullable=False)
+    failed_urls_path: Mapped[str] = mapped_column(Text, nullable=True)

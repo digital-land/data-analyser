@@ -1,0 +1,41 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Process CIL and IFS Documents</h1>
+
+        <div class="govuk-body">
+            <p>Upload CIL/IFS documents and local authority reference data to process and analyze.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="{{ form.cil_file.id }}">
+                    {{ form.cil_file.label }}
+                </label>
+                <div class="govuk-hint">
+                    Upload a CSV file containing CIL and IFS document metadata.
+                </div>
+                {{ form.cil_file(class="govuk-file-upload") }}
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="{{ form.reference_file.id }}">
+                    {{ form.reference_file.label }}
+                </label>
+                <div class="govuk-hint">
+                    Upload a CSV file containing local authority reference data.
+                </div>
+                {{ form.reference_file(class="govuk-file-upload") }}
+            </div>
+
+            <button type="submit" class="govuk-button">
+                Process Documents
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

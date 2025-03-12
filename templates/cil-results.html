@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">CIL Processing Results</h1>
+
+        <div class="govuk-body">
+            <p>Processing results for:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Source file: {{ process.source_file }}</li>
+                <li>Reference file: {{ process.reference_file }}</li>
+                <li>Created at: {{ process.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+            </ul>
+        </div>
+
+        <h2 class="govuk-heading-l">Generated Datasets</h2>
+
+        <div class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    CIL Dataset
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="{{ url_for('static', filename=process.cil_output_path) }}"
+                       class="govuk-link">
+                        Download CIL Dataset
+                    </a>
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    IFS Dataset
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="{{ url_for('static', filename=process.ifs_output_path) }}"
+                       class="govuk-link">
+                        Download IFS Dataset
+                    </a>
+                </dd>
+            </div>
+        </div>
+
+        <div class="govuk-button-group">
+            <a href="{{ url_for('main.process_cil') }}"
+               class="govuk-button"
+               data-module="govuk-button">
+                Process New Documents
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

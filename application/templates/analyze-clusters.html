@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Analyze Invalid Application Clusters</h1>
+
+        <div class="govuk-body">
+            <p>Upload a CSV file containing invalid application reasons to analyze clusters and generate visualizations.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="{{ form.file.id }}">
+                    {{ form.file.label }}
+                </label>
+                <div class="govuk-hint">
+                    Upload a CSV file containing invalid application reasons. The file should have a column named "Invalid Reason Details".
+                </div>
+                {{ form.file(class="govuk-file-upload") }}
+            </div>
+
+            <button type="submit" class="govuk-button">
+                Analyze Clusters
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

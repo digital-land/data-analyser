@@ -32,3 +32,21 @@ class ExtractTablesForm(FlaskForm):
             )
 
         return True
+
+
+class ClusterAnalysisForm(FlaskForm):
+    file = FileField("CSV File", validators=[DataRequired()])
+
+
+class CILProcessForm(FlaskForm):
+    cil_file = FileField("CIL/IFS Documents CSV", validators=[DataRequired()])
+    reference_file = FileField(
+        "Local Authority Reference CSV", validators=[DataRequired()]
+    )
+
+
+class PlanDataCollectionForm(FlaskForm):
+    input_file = FileField("Input CSV", validators=[DataRequired()])
+    reference_file = FileField(
+        "Document Type Reference CSV", validators=[DataRequired()]
+    )

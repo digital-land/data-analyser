@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Collect Plan Data</h1>
+
+        <div class="govuk-body">
+            <p>Upload input files to collect and process planning document data from URLs.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="{{ form.input_file.id }}">
+                    {{ form.input_file.label }}
+                </label>
+                <div class="govuk-hint">
+                    Upload a CSV file containing 'reference' and 'documentation-url' columns.
+                </div>
+                {{ form.input_file(class="govuk-file-upload") }}
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="{{ form.reference_file.id }}">
+                    {{ form.reference_file.label }}
+                </label>
+                <div class="govuk-hint">
+                    Upload a CSV file containing document type mappings.
+                </div>
+                {{ form.reference_file(class="govuk-file-upload") }}
+            </div>
+
+            <button type="submit" class="govuk-button">
+                Collect Data
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

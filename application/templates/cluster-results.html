@@ -1,0 +1,56 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl">Cluster Analysis Results</h1>
+
+        <div class="govuk-body">
+            <p>Analysis of invalid application reasons from file: {{ analysis.source_file }}</p>
+            <p>Created at: {{ analysis.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <h2 class="govuk-heading-l">Visualization</h2>
+                <img src="{{ url_for('static', filename=analysis.visualization_path) }}"
+                     alt="TSNE Clusters Visualization"
+                     class="govuk-!-width-full">
+            </div>
+
+            <div class="govuk-grid-column-one-half">
+                <h2 class="govuk-heading-l">Grouped Reasons</h2>
+                {% for theme, reasons in analysis.grouped_reasons.items() %}
+                <div class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            {{ theme }} ({{ reasons|length }} items)
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <ul class="govuk-list govuk-list--bullet">
+                            {% for reason in reasons %}
+                            <li>{{ reason }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="govuk-button-group">
+            <a href="{{ url_for('static', filename=analysis.report_path) }}"
+               class="govuk-button"
+               data-module="govuk-button">
+                Download Report
+            </a>
+            <a href="{{ url_for('main.analyze_clusters') }}"
+               class="govuk-button govuk-button--secondary"
+               data-module="govuk-button">
+                New Analysis
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

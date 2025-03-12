@@ -6,12 +6,19 @@
 #
 alembic==1.14.1
     # via flask-migrate
+appdirs==1.4.4
+    # via pyppeteer
 beautifulsoup4==4.13.3
     # via planning-data-analysis
 blinker==1.9.0
     # via flask
+branca==0.8.1
+    # via folium
 certifi==2025.1.31
-    # via requests
+    # via
+    #   pyogrio
+    #   pyproj
+    #   requests
 cffi==1.17.1
     # via cryptography
 charset-normalizer==3.4.1
@@ -22,8 +29,12 @@ click==8.1.8
     # via
     #   flask
     #   planning-data-analysis
+contourpy==1.3.1
+    # via matplotlib
 cryptography==44.0.1
     # via pdfminer-six
+cycler==0.12.1
+    # via matplotlib
 digital-land-frontend @ git+https://github.com/digital-land/digital-land-frontend.git
     # via -r requirements/requirements.in
 flask==3.1.0
@@ -42,8 +53,18 @@ flask-talisman==1.1.0
     # via -r requirements/requirements.in
 flask-wtf==1.2.2
     # via -r requirements/requirements.in
+folium==0.19.5
+    # via planning-data-analysis
+fonttools==4.56.0
+    # via matplotlib
+fuzzywuzzy==0.18.0
+    # via planning-data-analysis
+geopandas==1.0.1
+    # via planning-data-analysis
 govuk-frontend-jinja==3.4.1
     # via digital-land-frontend
+greenlet==3.1.1
+    # via playwright
 gunicorn==23.0.0
     # via -r requirements/requirements.in
 idna==3.10
@@ -54,8 +75,18 @@ itsdangerous==2.2.0
     #   flask-wtf
 jinja2==3.1.5
     # via
+    #   branca
     #   flask
+    #   folium
     #   govuk-frontend-jinja
+joblib==1.4.2
+    # via scikit-learn
+kiwisolver==1.4.8
+    # via matplotlib
+levenshtein==0.27.1
+    # via python-levenshtein
+lxml==5.3.1
+    # via python-docx
 mako==1.3.9
     # via alembic
 markupsafe==3.0.2
@@ -64,34 +95,88 @@ markupsafe==3.0.2
     #   mako
     #   werkzeug
     #   wtforms
+matplotlib==3.10.1
+    # via
+    #   -r requirements/requirements.in
+    #   planning-data-analysis
 numpy==2.2.3
-    # via pandas
+    # via
+    #   contourpy
+    #   folium
+    #   geopandas
+    #   matplotlib
+    #   pandas
+    #   planning-data-analysis
+    #   pyogrio
+    #   scikit-learn
+    #   scipy
+    #   shapely
 packaging==24.2
-    # via gunicorn
+    # via
+    #   geopandas
+    #   gunicorn
+    #   matplotlib
+    #   pyogrio
 pandas==2.2.3
-    # via planning-data-analysis
+    # via
+    #   geopandas
+    #   planning-data-analysis
 pdfminer-six==20231228
     # via pdfplumber
 pdfplumber==0.11.5
     # via planning-data-analysis
 pillow==11.1.0
-    # via pdfplumber
+    # via
+    #   matplotlib
+    #   pdfplumber
 planning-data-analysis @ git+https://github.com/digital-land/planning-data-analysis.git
     # via -r requirements/requirements.in
+playwright==1.50.0
+    # via planning-data-analysis
 psycopg2-binary==2.9.10
     # via -r requirements/requirements.in
 pycparser==2.22
     # via cffi
+pyee==12.1.1
+    # via
+    #   playwright
+    #   pyppeteer
+pyogrio==0.10.0
+    # via geopandas
+pyparsing==3.2.1
+    # via matplotlib
 pypdfium2==4.30.1
     # via pdfplumber
+pyppeteer==0.0.25
+    # via planning-data-analysis
+pyproj==3.7.1
+    # via geopandas
 python-dateutil==2.9.0.post0
-    # via pandas
+    # via
+    #   matplotlib
+    #   pandas
+python-docx==1.1.2
+    # via planning-data-analysis
 python-dotenv==1.0.1
     # via -r requirements/requirements.in
+python-levenshtein==0.27.1
+    # via planning-data-analysis
+python-slugify==8.0.4
+    # via planning-data-analysis
 pytz==2025.1
     # via pandas
+rapidfuzz==3.12.2
+    # via levenshtein
 requests==2.32.3
+    # via
+    #   folium
+    #   planning-data-analysis
+scikit-learn==1.6.1
     # via planning-data-analysis
+scipy==1.15.2
+    # via scikit-learn
+shapely==2.0.7
+    # via geopandas
 six==1.17.0
     # via python-dateutil
 soupsieve==2.6
@@ -100,18 +185,32 @@ sqlalchemy==2.0.38
     # via
     #   alembic
     #   flask-sqlalchemy
+text-unidecode==1.3
+    # via python-slugify
+threadpoolctl==3.5.0
+    # via scikit-learn
+tqdm==4.67.1
+    # via pyppeteer
 typing-extensions==4.12.2
     # via
     #   alembic
     #   beautifulsoup4
+    #   pyee
+    #   python-docx
     #   sqlalchemy
 tzdata==2025.1
     # via pandas
 urllib3==2.3.0
-    # via requests
+    # via
+    #   pyppeteer
+    #   requests
 validators==0.34.0
     # via digital-land-frontend
+websockets==15.0.1
+    # via pyppeteer
 werkzeug==3.1.3
     # via flask
 wtforms==3.2.1
     # via flask-wtf
+xyzservices==2025.1.0
+    # via folium
