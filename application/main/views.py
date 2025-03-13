@@ -244,6 +244,12 @@ def collect_plan_data_view():
     return render_template("collect-plan-data.html", form=form)
 
 
+@main.route("/cluster-index")
+def cluster_index():
+    analyses = ClusterAnalysis.query.order_by(ClusterAnalysis.created_at.desc()).all()
+    return render_template("cluster-index.html", analyses=analyses)
+
+
 @main.route("/cluster-results/<uuid:analysis_id>")
 def cluster_results(analysis_id):
     analysis = ClusterAnalysis.query.get_or_404(analysis_id)

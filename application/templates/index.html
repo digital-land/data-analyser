@@ -20,4 +20,13 @@
     </ul>
   </div>
 </div>
+<div class='govuk-grid-row'>
+  <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+    <h2 class="govuk-heading-m">Results</h2>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a href="{{ url_for('main.extract_index') }}">View table extraction results</a></li>
+      <li><a href="{{ url_for('main.cluster_index') }}">View cluster analysis results</a></li>
+    </ul>
+  </div>
+</div>
 {% endblock %}
