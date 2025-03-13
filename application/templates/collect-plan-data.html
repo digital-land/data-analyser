@@ -19,37 +19,35 @@
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Collect Plan Data</h1>
+        <h1 class="govuk-heading-xl">Collect and process planning documents</h1>
 
         <div class="govuk-body">
-            <p>Upload input files to collect and process planning document data from URLs.</p>
+            <p>Upload a CSV file containing planning document URLs to collect and process.</p>
+            <p>The system will automatically match documents against standard local plan document types.</p>
+            <div class="govuk-inset-text">
+                Your CSV file should contain at least two columns:
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>'reference' - A unique identifier for each plan</li>
+                    <li>'documentation-url' - The URL where plan documents can be found</li>
+                </ul>
+            </div>
         </div>
 
         <form method="POST" enctype="multipart/form-data">
             {{ form.csrf_token }}
 
             <div class="govuk-form-group">
-                <label class="govuk-label" for="{{ form.input_file.id }}">
-                    {{ form.input_file.label }}
+                <label class="govuk-label" for="input_file">
+                    Upload your CSV file
                 </label>
                 <div class="govuk-hint">
-                    Upload a CSV file containing 'reference' and 'documentation-url' columns.
+                    The file must be in CSV format
                 </div>
                 {{ form.input_file(class="govuk-file-upload") }}
             </div>
 
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="{{ form.reference_file.id }}">
-                    {{ form.reference_file.label }}
-                </label>
-                <div class="govuk-hint">
-                    Upload a CSV file containing document type mappings.
-                </div>
-                {{ form.reference_file(class="govuk-file-upload") }}
-            </div>
-
-            <button type="submit" class="govuk-button">
-                Collect Data
+            <button type="submit" class="govuk-button" data-module="govuk-button">
+                Start
             </button>
         </form>
     </div>

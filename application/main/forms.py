@@ -40,6 +40,3 @@ class ClusterAnalysisForm(FlaskForm):
 
 class PlanDataCollectionForm(FlaskForm):
     input_file = FileField("Input CSV", validators=[DataRequired()])
-    reference_file = FileField(
-        "Document Type Reference CSV", validators=[DataRequired()]
-    )

@@ -198,18 +198,16 @@ def collect_plan_data_view():
             # Create temp directory for processing
             temp_dir = tempfile.mkdtemp()
 
-            # Save uploaded files
+            # Save uploaded file
             input_file = form.input_file.data
-            ref_file = form.reference_file.data
-
             input_filename = secure_filename(input_file.filename)
-            ref_filename = secure_filename(ref_file.filename)
-
             input_path = os.path.join(temp_dir, input_filename)
-            ref_path = os.path.join(temp_dir, ref_filename)
-
             input_file.save(input_path)
-            ref_file.save(ref_path)
+
+            # Use local reference file
+            ref_path = os.path.join(
+                current_app.root_path, "data", "local-plan-document-types.csv"
+            )
 
             # Create output directory
             output_dir = os.path.join(temp_dir, "output")
@@ -224,7 +222,7 @@ def collect_plan_data_view():
             # Save results to database
             collection = PlanDataCollection(
                 source_file=input_filename,
-                reference_file=ref_filename,
+                reference_file="local-plan-document-types.csv",  # Store the standard filename
                 output_path=output_path,
                 failed_urls_path=(
                     failed_urls_path if os.path.exists(failed_urls_path) else None
