@@ -13,7 +13,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
                 <h2 class="govuk-heading-l">Visualization</h2>
-                <img src="{{ url_for('static', filename=analysis.visualization_path) }}"
+                <img src="{{ url_for('main.cluster_visualization', analysis_id=analysis.id) }}"
                      alt="TSNE Clusters Visualization"
                      class="govuk-!-width-full">
             </div>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="govuk-button-group">
-            <a href="{{ url_for('static', filename=analysis.report_path) }}"
+            <a href="{{ url_for('main.cluster_report', analysis_id=analysis.id) }}"
                class="govuk-button"
                data-module="govuk-button">
                 Download Report

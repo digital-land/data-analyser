@@ -14,6 +14,7 @@ class Config(object):
     SQLALCHEMY_RECORD_QUERIES = False
     DEBUG = False
     ALLOWED_EXTENSIONS = {"pdf"}
+    MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB limit
 
 
 class DevelopmentConfig(Config):

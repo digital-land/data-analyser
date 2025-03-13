@@ -1,5 +1,25 @@
 {% extends "layouts/base.html" %}
+{% set isHomepage = False %}
 
+{% block app_breadcrumbs %}
+  {{
+    govukBreadcrumbs({
+      'items': [
+        {
+          'text': "Home",
+          'href': url_for('main.index')
+        },
+        {
+            'text': "Analyze Invalid Application Clusters",
+            'href': url_for('main.analyze_clusters_view')
+        },
+        {
+          'text': "Cluster Analysis Results",
+        },
+      ]
+    })
+  }}
+{% endblock app_breadcrumbs %}
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -13,7 +33,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
                 <h2 class="govuk-heading-l">Visualization</h2>
-                <img src="{{ url_for('static', filename=analysis.visualization_path) }}"
+                <img src="{{ url_for('main.cluster_visualization', analysis_id=analysis.id) }}"
                      alt="TSNE Clusters Visualization"
                      class="govuk-!-width-full">
             </div>
@@ -40,12 +60,12 @@
         </div>
 
         <div class="govuk-button-group">
-            <a href="{{ url_for('static', filename=analysis.report_path) }}"
+            <a href="{{ url_for('main.cluster_report', analysis_id=analysis.id) }}"
                class="govuk-button"
                data-module="govuk-button">
                 Download Report
             </a>
-            <a href="{{ url_for('main.analyze_clusters') }}"
+            <a href="{{ url_for('main.analyze_clusters_view') }}"
                class="govuk-button govuk-button--secondary"
                data-module="govuk-button">
                 New Analysis

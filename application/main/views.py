@@ -3,6 +3,7 @@ import os
 import tempfile
 from io import BytesIO, StringIO
 
+import matplotlib
 from flask import (
     Blueprint,
     current_app,
@@ -12,7 +13,6 @@ from flask import (
     send_file,
     url_for,
 )
-from planning_data_analysis.cil_process import process_and_save
 from planning_data_analysis.cluster_analysis import analyze_clusters
 from planning_data_analysis.collect_plan_data import collect_plan_data
 from planning_data_analysis.extract import extract_table
@@ -20,19 +20,15 @@ from werkzeug.utils import secure_filename
 
 from application.extensions import db
 from application.main.forms import (
-    CILProcessForm,
     ClusterAnalysisForm,
     ExtractTablesForm,
     PlanDataCollectionForm,
 )
-from application.models import (
-    CILProcess,
-    ClusterAnalysis,
-    Extract,
-    ExtractItem,
-    PlanDataCollection,
-)
+from application.models import ClusterAnalysis, Extract, ExtractItem, PlanDataCollection
 from application.utils import allowed_file
+
+matplotlib.use("Agg")  # Use non-interactive backend
+
 
 main = Blueprint("main", __name__, template_folder="templates")
 
@@ -152,14 +148,35 @@ def analyze_clusters_view():
             # Run analysis
             analyze_clusters(input_path, output_dir)
 
+            # Read the generated files
+            visualization_path = os.path.join(output_dir, "TSNE_Clusters.png")
+            report_path = os.path.join(
+                output_dir, "Grouped_Invalid_Reason_Details.docx"
+            )
+            csv_path = os.path.join(output_dir, "Grouped_Invalid_Reason_Details.csv")
+
+            with open(visualization_path, "rb") as f:
+                visualization_data = f.read()
+
+            with open(report_path, "rb") as f:
+                report_data = f.read()
+
+            # Read the CSV to get grouped reasons
+            import pandas as pd
+
+            grouped_df = pd.read_csv(csv_path)
+            grouped_reasons = {
+                col: grouped_df[col].dropna().tolist() for col in grouped_df.columns
+            }
+
             # Save results to database
             analysis = ClusterAnalysis(
                 source_file=filename,
-                grouped_reasons={},  # TODO: Extract from output
-                visualization_path=os.path.join(output_dir, "TSNE_Clusters.png"),
-                report_path=os.path.join(
-                    output_dir, "Grouped_Invalid_Reason_Details.docx"
-                ),
+                grouped_reasons=grouped_reasons,
+                visualization_data=visualization_data,
+                visualization_mime_type="image/png",
+                report_data=report_data,
+                report_mime_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             )
             db.session.add(analysis)
             db.session.commit()
@@ -171,53 +188,6 @@ def analyze_clusters_view():
             return redirect(url_for("main.analyze_clusters"))
 
     return render_template("analyze-clusters.html", form=form)
-
-
-@main.route("/process-cil", methods=["GET", "POST"])
-def process_cil_view():
-    form = CILProcessForm()
-    if form.validate_on_submit():
-        try:
-            # Create temp directory for processing
-            temp_dir = tempfile.mkdtemp()
-
-            # Save uploaded files
-            cil_file = form.cil_file.data
-            ref_file = form.reference_file.data
-
-            cil_filename = secure_filename(cil_file.filename)
-            ref_filename = secure_filename(ref_file.filename)
-
-            cil_path = os.path.join(temp_dir, cil_filename)
-            ref_path = os.path.join(temp_dir, ref_filename)
-
-            cil_file.save(cil_path)
-            ref_file.save(ref_path)
-
-            # Create output directory
-            output_dir = os.path.join(temp_dir, "output")
-            os.makedirs(output_dir, exist_ok=True)
-
-            # Process CIL data
-            process_and_save(cil_path, ref_path, output_dir)
-
-            # Save results to database
-            process = CILProcess(
-                source_file=cil_filename,
-                reference_file=ref_filename,
-                cil_output_path=os.path.join(output_dir, "cil_dataset.csv"),
-                ifs_output_path=os.path.join(output_dir, "ifs_dataset.csv"),
-            )
-            db.session.add(process)
-            db.session.commit()
-
-            return redirect(url_for("main.cil_results", process_id=process.id))
-
-        except Exception as e:
-            flash(f"Error: {e}", "error")
-            return redirect(url_for("main.process_cil"))
-
-    return render_template("process-cil.html", form=form)
 
 
 @main.route("/collect-plan-data", methods=["GET", "POST"])
@@ -280,13 +250,28 @@ def cluster_results(analysis_id):
     return render_template("cluster-results.html", analysis=analysis)
 
 
-@main.route("/cil-results/<uuid:process_id>")
-def cil_results(process_id):
-    process = CILProcess.query.get_or_404(process_id)
-    return render_template("cil-results.html", process=process)
-
-
 @main.route("/plan-data-results/<uuid:collection_id>")
 def plan_data_results(collection_id):
     collection = PlanDataCollection.query.get_or_404(collection_id)
     return render_template("plan-data-results.html", collection=collection)
+
+
+@main.route("/cluster-results/<uuid:analysis_id>/visualization")
+def cluster_visualization(analysis_id):
+    analysis = ClusterAnalysis.query.get_or_404(analysis_id)
+    return send_file(
+        BytesIO(analysis.visualization_data),
+        mimetype=analysis.visualization_mime_type,
+        as_attachment=False,
+    )
+
+
+@main.route("/cluster-results/<uuid:analysis_id>/report")
+def cluster_report(analysis_id):
+    analysis = ClusterAnalysis.query.get_or_404(analysis_id)
+    return send_file(
+        BytesIO(analysis.report_data),
+        mimetype=analysis.report_mime_type,
+        download_name=f"cluster_analysis_report_{analysis_id}.docx",
+        as_attachment=True,
+    )
