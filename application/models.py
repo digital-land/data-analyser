@@ -59,5 +59,5 @@ class PlanDataCollection(db.Model):
     created_at: Mapped[datetime.date] = mapped_column(
         DateTime, default=datetime.datetime.today, nullable=False
     )
-    output_path: Mapped[str] = mapped_column(Text, nullable=False)
-    failed_urls_path: Mapped[str] = mapped_column(Text, nullable=True)
+    data: Mapped[str] = mapped_column(Text, nullable=False)
+    failed_urls: Mapped[str] = mapped_column(Text, nullable=True)

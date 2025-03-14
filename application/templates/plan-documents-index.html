@@ -1,0 +1,91 @@
+{% extends 'layouts/base.html' %}
+{% set isHomepage = False %}
+
+{% block app_breadcrumbs %}
+    {{
+        govukBreadcrumbs({
+        'items': [
+            {
+                'text': "Home",
+                'href': url_for('main.index')
+            },
+            {
+                'text': "Plan Documents Collection Results",
+            }
+            ]
+        })
+    }}
+{% endblock app_breadcrumbs %}
+
+{% block content %}
+<div class='govuk-grid-row'>
+    <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
+        <h1 class="govuk-heading-l">Plan Documents Collection Results</h1>
+        <p class="govuk-body">
+            Here are the results of the last five days of plan document collections. Older collections are deleted.
+        </p>
+        {% for collection in collections %}
+
+        <div id="collection" class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                    Collection
+                </h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Source File
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ collection.source_file }}
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Results
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="{{ url_for('main.plan_documents_results', collection_id=collection.id) }}">
+                                View collection results
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Created at
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ collection.created_at | short_datetime }}
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Downloads
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <ul class="govuk-list">
+                                <li>
+                                    <a href="{{ url_for('main.download_plan_documents', collection_id=collection.id) }}">
+                                        Download results
+                                    </a>
+                                </li>
+                                {% if collection.failed_urls %}
+                                <li>
+                                    <a href="{{ url_for('main.download_failed_urls', collection_id=collection.id) }}">
+                                        Download failed URLs
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

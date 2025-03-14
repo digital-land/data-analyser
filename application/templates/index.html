@@ -16,17 +16,18 @@
     <ul class="govuk-list govuk-list--bullet">
       <li><a href="{{ url_for('main.extract_tables') }}">Extract tables from a PDF file or a webpage</a></li>
       <li><a href="{{ url_for('main.analyze_clusters_view') }}">Analyze clusters of invalid planning application reasons</a></li>
-      <li><a href="{{ url_for('main.collect_plan_data_view') }}">Collect and process planning documents from local authority websites</a></li>
+      <li><a href="{{ url_for('main.collect_plan_documents') }}">Collect planning document data from local authority websites</a></li>
     </ul>
   </div>
 </div>
 <div class='govuk-grid-row'>
   <div class='govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop'>
     <h2 class="govuk-heading-m">Results</h2>
+    <p class="govuk-body">These are the results of previous runs of the tools that are stored in the database for up to five days.</p>
     <ul class="govuk-list govuk-list--bullet">
-      <li><a href="{{ url_for('main.extract_index') }}">View table extraction results</a></li>
-      <li><a href="{{ url_for('main.cluster_index') }}">View cluster analysis results</a></li>
-    </ul>
+      <li><a href="{{ url_for('main.extract_index') }}">View previous table extraction results</a></li>
+      <li><a href="{{ url_for('main.cluster_index') }}">View previous cluster analysis results</a></li>
+      <li><a href="{{ url_for('main.plan_documents_index') }}">View previous planning document collection results</a></li>
   </div>
 </div>
 {% endblock %}

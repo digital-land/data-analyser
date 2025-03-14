@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 import click
-from flask.cli import AppGroup, with_appcontext
+from flask.cli import AppGroup
 
 from application.extensions import db
 from application.models import ClusterAnalysis, Extract, PlanDataCollection
@@ -9,9 +9,17 @@ from application.models import ClusterAnalysis, Extract, PlanDataCollection
 cli = AppGroup("cli")
 
 
-@click.command("delete-old-results")
-@click.option("--days", default=30, help="Delete data older than this many days")
-@with_appcontext
+@cli.command("delete-all-results")
+def delete_all_results():
+    """Delete all results from the database."""
+    Extract.query.delete()
+    ClusterAnalysis.query.delete()
+    PlanDataCollection.query.delete()
+    db.session.commit()
+
+
+@cli.command("delete-old-results")
+@click.option("--days", default=5, help="Delete data older than this many days")
 def delete_old_results(days):
     """Delete results older than specified days."""
     cutoff_date = datetime.now() - timedelta(days=days)

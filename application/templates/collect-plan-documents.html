@@ -10,7 +10,7 @@
           'href': url_for('main.index')
         },
         {
-          'text': "Analyze invalid application clusters",
+          'text': "Collect plan documents",
         },
       ]
     })
@@ -36,26 +36,34 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Analyze invalid application clusters</h1>
+        <h1 class="govuk-heading-xl">Collect plan documents</h1>
 
         <div class="govuk-body">
-            <p>Upload a CSV file containing invalid application reasons to analyze clusters and generate visualizations.</p>
+            <p>Upload a CSV file containing planning document URLs to collect and process.</p>
+            <p>The system will automatically match documents against standard local plan document types.</p>
+            <div class="govuk-inset-text">
+                Your CSV file should contain at least two columns:
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>'reference' - A unique identifier for each plan</li>
+                    <li>'documentation-url' - The URL where plan documents can be found</li>
+                </ul>
+            </div>
         </div>
 
         <form method="POST" enctype="multipart/form-data">
             {{ form.csrf_token }}
 
             <div class="govuk-form-group">
-                <label class="govuk-label" for="{{ form.file.id }}">
-                    {{ form.file.label }}
+                <label class="govuk-label" for="input_file">
+                    Upload your CSV file
                 </label>
                 <div class="govuk-hint">
-                    Upload a CSV file containing invalid application reasons. The file should have a column named "Invalid Reason Details".
+                    The file must be in CSV format
                 </div>
-                {{ form.file(class="govuk-file-upload") }}
+                {{ form.input_file(class="govuk-file-upload") }}
             </div>
 
-            <button type="submit" class="govuk-button">
+            <button type="submit" class="govuk-button" data-module="govuk-button">
                 Start
             </button>
         </form>

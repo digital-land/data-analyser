@@ -1,0 +1,119 @@
+{% extends "layouts/base.html" %}
+{% set isHomepage = False %}
+
+{% block app_breadcrumbs %}
+    {{
+        govukBreadcrumbs({
+        'items': [
+            {
+                'text': "Home",
+                'href': url_for('main.index')
+            },
+            {
+                'text': "Collect plan documents",
+                'href': url_for('main.collect_plan_documents')
+            },
+            {
+                'text': "Results",
+            }
+            ]
+        })
+    }}
+{% endblock app_breadcrumbs %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="app-grid-row app-grid-row--space-between govuk-!-margin-bottom-3">
+            <div class="app-grid-column">
+                <h1 class="govuk-heading-xl">Results</h1>
+                <div class="govuk-body">
+                    <p>Results from processing file: {{ collection.source_file }}</p>
+                    <p>Created at: {{ collection.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                </div>
+            </div>
+            <div class="app-grid-column">
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-1">{{ rows | length }} records</h2>
+            </div>
+        </div>
+
+        <div class="govuk-button-group govuk-!-margin-bottom-6">
+            <a href="{{ url_for('main.download_plan_documents', collection_id=collection.id) }}"
+               class="govuk-button"
+               data-module="govuk-button">
+                Download Results
+            </a>
+            {% if collection.failed_urls %}
+            <a href="{{ url_for('main.download_failed_urls', collection_id=collection.id) }}"
+               class="govuk-button govuk-button--warning"
+               data-module="govuk-button">
+                Download Failed URLs
+            </a>
+            {% endif %}
+            <a href="{{ url_for('main.collect_plan_documents') }}"
+               class="govuk-button govuk-button--secondary"
+               data-module="govuk-button">
+                New Collection
+            </a>
+        </div>
+
+        {% if rows | length > 0 %}
+        <section class="app-table-container">
+            <table class="app-data-table">
+                <thead class="app-data-table__head">
+                    <tr class="app-data-table__row">
+                        {% for header in headers %}
+                        <th scope="col" class="app-data-table__header">
+                            <span class="app-data-table__header__label">{{ header }}</span>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="app-data-table__body">
+                    {% for row in rows %}
+                    <tr class="app-data-table__row">
+                        {% for header in headers %}
+                        <td class="app-data-table__cell">{{ row[header] | default('') }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        {% if failed_urls %}
+        <section class="app-table-container govuk-!-margin-top-6">
+            <h2 class="govuk-heading-l">Failed URLs</h2>
+            <table class="app-data-table">
+                <thead class="app-data-table__head">
+                    <tr class="app-data-table__row">
+                        <th scope="col" class="app-data-table__header">
+                            <span class="app-data-table__header__label">Reference</span>
+                        </th>
+                        <th scope="col" class="app-data-table__header">
+                            <span class="app-data-table__header__label">URL</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="app-data-table__body">
+                    {% for url in failed_urls %}
+                    <tr class="app-data-table__row">
+                        <td class="app-data-table__cell">{{ url.reference }}</td>
+                        <td class="app-data-table__cell">{{ url.documentation_url }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% endif %}
+
+        {% else %}
+        {{
+            govukInsetText({
+                'text': 'No documents were found in the collection.'
+            })
+        }}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

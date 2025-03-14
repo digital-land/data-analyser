@@ -2,6 +2,7 @@ import csv
 import os
 import tempfile
 from io import BytesIO, StringIO
+from pathlib import Path
 
 import matplotlib
 from flask import (
@@ -190,8 +191,8 @@ def analyze_clusters_view():
     return render_template("analyze-clusters.html", form=form)
 
 
-@main.route("/collect-plan-data", methods=["GET", "POST"])
-def collect_plan_data_view():
+@main.route("/collect-plan-documents", methods=["GET", "POST"])
+def collect_plan_documents():
     form = PlanDataCollectionForm()
     if form.validate_on_submit():
         try:
@@ -205,41 +206,108 @@ def collect_plan_data_view():
             input_file.save(input_path)
 
             # Use local reference file
-            ref_path = os.path.join(
-                current_app.root_path, "data", "local-plan-document-types.csv"
-            )
+            app_path = Path(current_app.root_path)
+            data_dir = app_path.parent / "data"
+            ref_path = data_dir / "local-plan-document-type.csv"
 
             # Create output directory
             output_dir = os.path.join(temp_dir, "output")
             os.makedirs(output_dir, exist_ok=True)
 
             # Process plan data
-            output_path = os.path.join(output_dir, "plan_data.csv")
+            output_path = os.path.join(output_dir, "plan_documents.csv")
             failed_urls_path = os.path.join(output_dir, "failed_urls.csv")
 
             collect_plan_data(input_path, ref_path, output_path, failed_urls_path)
 
+            # Read the output files
+            with open(output_path, "r") as f:
+                output_data = f.read()
+
+            failed_urls_data = None
+            if os.path.exists(failed_urls_path):
+                with open(failed_urls_path, "r") as f:
+                    failed_urls_data = f.read()
+
             # Save results to database
             collection = PlanDataCollection(
                 source_file=input_filename,
-                reference_file="local-plan-document-types.csv",  # Store the standard filename
-                output_path=output_path,
-                failed_urls_path=(
-                    failed_urls_path if os.path.exists(failed_urls_path) else None
-                ),
+                reference_file="local-plan-document-type.csv",
+                data=output_data,
+                failed_urls=failed_urls_data,
             )
             db.session.add(collection)
             db.session.commit()
 
             return redirect(
-                url_for("main.plan_data_results", collection_id=collection.id)
+                url_for("main.plan_documents_results", collection_id=collection.id)
             )
 
         except Exception as e:
             flash(f"Error: {e}", "error")
-            return redirect(url_for("main.collect_plan_data"))
+            return redirect(url_for("main.collect_plan_documents"))
 
-    return render_template("collect-plan-data.html", form=form)
+    return render_template("collect-plan-documents.html", form=form)
+
+
+@main.route("/plan-documents-results/<uuid:collection_id>")
+def plan_documents_results(collection_id):
+    collection = PlanDataCollection.query.get_or_404(collection_id)
+
+    # Parse the CSV data to display in the template
+    reader = csv.DictReader(StringIO(collection.data))
+    headers = reader.fieldnames
+    rows = [row for row in reader]
+
+    # Parse failed URLs if they exist
+    failed_urls = None
+    if collection.failed_urls:
+        failed_reader = csv.DictReader(StringIO(collection.failed_urls))
+        failed_urls = [row for row in failed_reader]
+
+    return render_template(
+        "plan-documents-results.html",
+        collection=collection,
+        headers=headers,
+        rows=rows,
+        failed_urls=failed_urls,
+    )
+
+
+@main.route("/plan-documents-results/<uuid:collection_id>/download")
+def download_plan_documents(collection_id):
+    collection = PlanDataCollection.query.get_or_404(collection_id)
+    return send_file(
+        BytesIO(collection.data.encode("utf-8")),
+        mimetype="text/csv",
+        download_name=f"local-plan-documents-{collection_id}.csv",
+        as_attachment=True,
+    )
+
+
+@main.route("/plan-documents-results/<uuid:collection_id>/failed-urls")
+def download_failed_urls(collection_id):
+    collection = PlanDataCollection.query.get_or_404(collection_id)
+    if not collection.failed_urls:
+        flash("No failed URLs file available", "error")
+        return redirect(
+            url_for("main.plan_documents_results", collection_id=collection_id)
+        )
+
+    return send_file(
+        BytesIO(collection.failed_urls.encode("utf-8")),
+        mimetype="text/csv",
+        download_name=f"failed_urls_{collection_id}.csv",
+        as_attachment=True,
+    )
+
+
+@main.route("/plan-documents-index")
+def plan_documents_index():
+    collections = PlanDataCollection.query.order_by(
+        PlanDataCollection.created_at.desc()
+    ).all()
+    return render_template("plan-documents-index.html", collections=collections)
 
 
 @main.route("/cluster-index")
@@ -252,12 +320,6 @@ def cluster_index():
 def cluster_results(analysis_id):
     analysis = ClusterAnalysis.query.get_or_404(analysis_id)
     return render_template("cluster-results.html", analysis=analysis)
-
-
-@main.route("/plan-data-results/<uuid:collection_id>")
-def plan_data_results(collection_id):
-    collection = PlanDataCollection.query.get_or_404(collection_id)
-    return render_template("plan-data-results.html", collection=collection)
 
 
 @main.route("/cluster-results/<uuid:analysis_id>/visualization")
